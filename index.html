@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>northern lights - Compras por Catálogo a Domicilio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { corePlugins: { container: false } };</script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="pedidos.css">
+</head>
+<body class="text-slate-800 antialiased flex flex-col min-h-screen">
+
+    <div class="bg-indigo-600 text-white text-xs md:text-sm py-2 px-4 text-center font-medium flex items-center justify-center gap-2 shadow-inner">
+        <i data-lucide="truck" class="w-4 h-4"></i>
+        <span>¡Envíos gratis a domicilio en pedidos superiores a $50! Pedidos directos a tu puerta.</span>
+    </div>
+
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100">
+<div class="container">
+<div class="flex items-center justify-between h-20">
+
+<div class="flex items-center space-x-3 cursor-pointer" onclick="resetFilters()">
+<div class="bg-gradient-to-tr from-indigo-600 to-violet-500 text-white p-3 rounded-2xl shadow-md shadow-indigo-100">
+<i data-lucide="shopping-bag" class="w-6 h-6"></i>
+</div>
+<div>
+<span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">northern lights</span>
+<p class="text-xs text-slate-500 font-medium tracking-wide flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+Catálogo y Servicio a Domicilio
+</p></div></div>
+
+<div class="hidden md:flex flex-1 max-w-md mx-8 relative">
+<input type="text" id="searchInput" oninput="setSearch(this.value)" placeholder="Buscar productos en el catálogo..." 
+ class="w-full pl-10 pr-4 py-2.5 rounded-full bg-slate-100 border border-transparent focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-all text-sm outline-none">
+<i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400"></i>
+</div>
+
+<div class="flex items-center gap-2">
+<button id="accountBtn" onclick="openAuth()" aria-label="Mi cuenta" class="p-2.5 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl transition-all flex items-center gap-2 font-semibold text-sm">
+<i data-lucide="user" class="w-5 h-5"></i>
+<span id="accountLabel" class="hidden sm:inline">Iniciar sesión</span>
+</button>
+<button onclick="toggleCart()" aria-label="Abrir pedido" class="relative p-2.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-xl transition-all flex items-center gap-2 font-semibold text-sm">
+<i data-lucide="shopping-cart" class="w-5 h-5"></i>
+<span class="hidden sm:inline">Mi Pedido</span>
+<span id="cartCount" class="bg-indigo-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+</button>
+</div>
+</div>
+
+<div class="pb-4 md:hidden relative">
+<input type="text" id="searchInputMobile" oninput="setSearch(this.value)" placeholder="Buscar productos..." 
+class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-100 border border-transparent focus:border-indigo-500 focus:bg-white text-sm outline-none">
+<i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
+</div>
+</div>
+</header>
+
+<section class="bg-gradient-to-b from-indigo-50/50 to-transparent py-8 md:py-12 border-b border-slate-100">
+<div class="container">
+<div class="row align-items-center g-4">
+<div class="col-12 col-md-8">
+<div class="space-y-3 max-w-2xl text-center sm:text-left">
+<span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-full uppercase tracking-wider">Catálogo Digital 2026</span>
+<h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Tu catálogo favorito, ahora directo a tu puerta.</h1>
+<p class="text-slate-600 text-base">Explora nuestra colección seleccionada de productos de alta calidad para el hogar, tecnología y belleza. Haz tu pedido hoy y paga al recibir.</p>
+</div>
+</div>
+<div class="col-12 col-md-4">
+<div class="flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+<div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+<i data-lucide="shield-check" class="w-8 h-8"></i>
+</div>
+<div class="text-left">
+<h3 class="text-sm font-bold text-slate-800">Entrega Garantizada</h3>
+<p class="text-xs text-slate-500">Pago contra entrega en efectivo o tarjeta</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<main class="container flex-1 w-full">
+<div id="categoryFilters" class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 custom-scrollbar">
+<button data-category="All" class="category-btn active">Todos los Productos</button>
+<button data-category="Hogar" class="category-btn"><i data-lucide="home"></i>Hogar</button>
+<button data-category="Belleza" class="category-btn"><i data-lucide="sparkles"></i>Belleza</button>
+<button data-category="Tecnología" class="category-btn"><i data-lucide="smartphone"></i>Tecnología</button>
+<button data-category="Ofertas" class="category-btn category-btn--offer"><i data-lucide="tag"></i>Ofertas Especiales</button>
+</div>
+
+<div id="productsGrid" class="row g-3">
+</div>
+
+<div id="emptyState" class="hidden text-center py-16">
+<div class="p-4 bg-slate-100 text-slate-400 rounded-full inline-block mb-3">
+<i data-lucide="search-x" class="w-10 h-10"></i>
+</div>
+<h3 class="text-lg font-bold text-slate-700">No se encontraron productos</h3>
+<p class="text-slate-500 text-sm mt-1">Intenta con otra búsqueda o selecciona una categoría diferente.</p>
+</div>
+</main>
+
+<div id="cartOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden transition-opacity" onclick="toggleCart()"></div>
+<div id="cartSidebar" class="fixed right-0 top-0 h-full w-full sm:w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+        
+
+<div class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+<div class="flex items-center gap-2">
+<i data-lucide="shopping-bag" class="w-5 h-5 text-indigo-600"></i>
+<h2 class="text-lg font-bold text-slate-800">Tu Pedido a Domicilio</h2>
+</div>
+<button onclick="toggleCart()" aria-label="Cerrar pedido" class="p-2 hover:bg-slate-200 rounded-lg text-slate-500 transition-colors">
+<i data-lucide="x" class="w-5 h-5"></i>
+</button></div>
+
+<div class="flex-1 overflow-y-auto p-5 custom-scrollbar">          
+<div id="cartItemsContainer" class="space-y-4"></div>
+
+<form id="checkoutForm" class="mt-8 border-t border-slate-200 pt-6 space-y-4 hidden" onsubmit="submitOrder(event)">
+<h3 class="text-md font-bold text-slate-800 flex items-center gap-2">
+<i data-lucide="map-pin" class="w-4 h-4 text-indigo-600"></i> Datos de Entrega a Domicilio
+</h3>
+
+<div>
+<label class="block text-xs font-semibold text-slate-600 mb-1">Nombre Completo *</label>
+<input type="text" required id="custName" placeholder="Ej. Ana García" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+</div>
+
+<div>
+<label class="block text-xs font-semibold text-slate-600 mb-1">Teléfono de Contacto *</label>
+<input type="tel" required id="custPhone" placeholder="Ej. +52 55 1234 5678" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+</div>
+
+<div>
+<label class="block text-xs font-semibold text-slate-600 mb-1">Dirección Exacta de Entrega *</label>
+<textarea required id="custAddress" rows="2" placeholder="Calle, número, colonia y referencias..." class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"></textarea>
+</div>
+
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="block text-xs font-semibold text-slate-600 mb-1">Fecha de Entrega</label>
+<input type="date" required id="custDate" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-600 mb-1">Horario Preferido</label>
+<select id="custTime" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+<option value="Mañana (9:00 - 13:00)">Mañana (9:00 - 13:00)</option>
+<option value="Tarde (13:00 - 18:00)">Tarde (13:00 - 18:00)</option>
+</select>
+</div>
+</div>
+
+<div>
+<label class="block text-xs font-semibold text-slate-600 mb-1">Método de Pago</label>
+<select id="custPayment" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+<option value="Efectivo al recibir">Efectivo al recibir</option>
+<option value="Tarjeta contra entrega">Tarjeta de Débito/Crédito al recibir</option>
+<option value="Transferencia Bancaria">Transferencia Bancaria Previa</option>
+</select>
+</div>
+<div class="pt-4 space-y-2">
+<button type="button" onclick="confirmSimulatedOrder()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-sm transition-all">
+Confirmar Orden en la Web</button>
+</div>
+</form>
+</div>
+<div class="p-5 border-t border-slate-200 bg-slate-50 space-y-3">
+<div class="flex justify-between items-center text-slate-600 text-sm">
+<span>Subtotal:</span>
+<span id="subtotalAmount" class="font-semibold">$0.00</span>
+</div>
+<div class="flex justify-between items-center text-slate-600 text-sm">
+<span>Costo de Envío:</span>
+<span id="shippingAmount" class="font-semibold text-emerald-600">Gratis</span>
+</div>
+<div class="flex justify-between items-center text-lg font-extrabold text-slate-900 pt-2 border-t border-slate-200">
+<span>Total a Pagar:</span>
+<span id="totalAmount" class="text-indigo-600">$0.00</span>
+</div>
+</div>
+</div>
+
+<div id="authOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] hidden items-center justify-center p-4" onclick="if (event.target === this) closeAuth()">
+<div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
+<button onclick="closeAuth()" aria-label="Cerrar" class="absolute top-3 right-3 p-2 hover:bg-slate-100 rounded-lg text-slate-500">
+<i data-lucide="x" class="w-5 h-5"></i>
+</button>
+<div id="authTabs" class="flex gap-1 bg-slate-100 p-1 rounded-xl mb-5 mr-8">
+<button id="tabLogin" onclick="showAuthView('login')" class="flex-1 py-2 rounded-lg text-sm font-semibold">Entrar</button>
+<button id="tabRegister" onclick="showAuthView('register')" class="flex-1 py-2 rounded-lg text-sm font-semibold">Crear cuenta</button>
+</div>
+
+<form id="loginForm" class="space-y-3" onsubmit="handleLogin(event)">
+<div>
+<label class="block text-xs font-semibold text-slate-600 mb-1">Correo electrónico</label>
+<input type="email" required id="loginEmail" autocomplete="email" placeholder="tucorreo@ejemplo.com" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-600 mb-1">Contraseña</label>
+<input type="password" required id="loginPassword" autocomplete="current-password" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+</div>
+<p id="loginError" class="text-xs text-rose-600 hidden"></p>
+<button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm transition-all">Entrar</button>
+</form>
+
+
+<form id="registerForm" class="space-y-3 hidden" onsubmit="handleRegister(event)">
+<div>
+<label class="block text-xs font-semibold text-slate-600 mb-1">Nombre completo</label>
+<input type="text" required id="regName" autocomplete="name" placeholder="Ej. Ana García" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-600 mb-1">Teléfono</label>
+<input type="tel" required id="regPhone" autocomplete="tel" placeholder="Ej. +503 7000 0000" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-600 mb-1">Correo electrónico</label>
+<input type="email" required id="regEmail" autocomplete="email" placeholder="tucorreo@ejemplo.com" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-600 mb-1">Contraseña (mínimo 6 caracteres)</label>
+<input type="password" required minlength="6" id="regPassword" autocomplete="new-password" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+</div>
+<p id="registerError" class="text-xs text-rose-600 hidden"></p>
+<button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm transition-all">Crear mi cuenta</button>
+</form>
+<div id="profileView" class="hidden text-center space-y-3">
+<div class="mx-auto w-14 h-14 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center">
+ <i data-lucide="user-check" class="w-7 h-7"></i>
+</div>
+<div>
+<p class="text-xs text-slate-500">Sesión iniciada como</p>
+<p id="profileName" class="font-bold text-slate-800"></p>
+<p id="profileEmail" class="text-xs text-slate-500"></p>
+</div>
+<p class="text-xs text-slate-500">Tu nombre y teléfono se llenan solos al hacer un pedido.</p>
+<button onclick="handleLogout()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-sm transition-all">Cerrar sesión</button>
+</div>
+</div>
+</div>
+<div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-lg z-50 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3">
+<i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
+<span id="toastMessage" class="text-sm font-medium">Producto agregado al carrito</span>
+</div>
+
+<footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-auto">
+    <div class="container text-center space-y-3">
+    <p class="text-sm">&copy; 2026 Catalogia S.A. Todos los derechos reservados.</p>
+    <p class="text-xs text-slate-500">Ventas por catálogo con entregas a domicilio rápido y seguro.</p>
+    </div>
+</footer>
+<script src="pedidos.js"></script>
+</body>
+</html> 
